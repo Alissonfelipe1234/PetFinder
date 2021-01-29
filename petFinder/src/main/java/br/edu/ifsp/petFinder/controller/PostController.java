@@ -1,6 +1,7 @@
 package br.edu.ifsp.petFinder.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,42 +29,48 @@ public class PostController {
 	
 	  @GetMapping("/posts")
 	  public ResponseEntity<List<Post>> getAllPosts(@RequestParam(required = false) String nome) {
-		return null;
+		  List<Post> results =  postRepository.findByNomeContaining(nome);
+		  return new ResponseEntity<>(results, HttpStatus.OK);
 	  }
 	
 	  @GetMapping("/posts/{id}")
 	  public ResponseEntity<Post> getPostById(@PathVariable("id") long id) {
-		return null;
-	    
+		  Optional<Post> result =  postRepository.findById(id);
+		  if (result.isPresent()) {
+			  Post post = result.get();
+			  return new ResponseEntity<>(post, HttpStatus.OK);
+		  }
+		  return null;
 	  }
 	  
 	  @PostMapping("/posts")
 	  public ResponseEntity<Post> createPost(@RequestBody Post post) {
-		return null;
-	    
+		  postRepository.saveAndFlush(post);
+		  return new ResponseEntity<>(post, HttpStatus.OK);	    
 	  }
 	
 	  @PutMapping("/posts/{id}")
 	  public ResponseEntity<Post> updatePost(@PathVariable("id") long id, @RequestBody Post post) {
-		return null;
-		  
+		  postRepository.deleteById(id);
+		  postRepository.saveAndFlush(post);
+		  return new ResponseEntity<>(post, HttpStatus.OK);   
 	  }
 	
 	  @DeleteMapping("/posts/{id}")
 	  public ResponseEntity<HttpStatus> deletePost(@PathVariable("id") long id) {
-		return null;
-	   	
+		  postRepository.deleteById(id);
+		  return new ResponseEntity<>(null, HttpStatus.OK); 
 	  }
 	
 	  @DeleteMapping("/posts")
 	  public ResponseEntity<HttpStatus> deleteAllPosts() {
-		return null;
-	    	
+		  postRepository.deleteAll();
+		  return new ResponseEntity<>(null, HttpStatus.OK);
 	  }
 	
 	  @GetMapping("/posts/published")
 	  public ResponseEntity<List<Post>> findByPublished() {
-		return null;
-	    	
+		  List<Post> results =  postRepository.findByEncontrado(true);
+		  return new ResponseEntity<>(results, HttpStatus.OK);
 	  }
 }
